@@ -1,10 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import Navigation from "../components/Navigation";
+import axios from "axios";
+import Article from "../components/Article"; // adapte le chemin si besoin
 
 const Blog = () => {
+  const [blogData, setBlogData] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const getDate = () => {
+      axios
+        .get("http://localhost:3004/articles")
+        .then((res) => setBlogData(res.data))
+        .catch((err) => console.error("Erreur axios :", err));
+    };
+
+    getDate(); // 👈 appelle la fonction ici
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -31,7 +46,11 @@ const Blog = () => {
         {error && <p>Veullez écrire un minimum de 140 caractères</p>}
         <input type="submit" value="Envoyer" />
       </form>
-      <ul></ul>
+      <ul>
+        {blogData.map((article) => (
+          <Article key={article.id} article={article} />
+        ))}
+      </ul>
     </div>
   );
 };
