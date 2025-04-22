@@ -6,6 +6,7 @@ import Article from "../components/Article"; // adapte le chemin si besoin
 
 const Blog = () => {
   const [blogData, setBlogData] = useState([]);
+  const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState(false);
 
@@ -26,7 +27,14 @@ const Blog = () => {
     if (content.length < 140) {
       setError(true);
     } else {
+      axios.post("http://localhost:3004/articles", {
+        author,
+        content,
+        date: Date.now(),
+      });
       setError(false);
+      setAuthor("");
+      setContent("");
     }
   };
 
@@ -37,7 +45,11 @@ const Blog = () => {
       <h1>blog</h1>
 
       <form onSubmit={(e) => handleSubmit(e)}>
-        <input type="text" placeholder="Nom" />
+        <input
+          type="text"
+          placeholder="Nom"
+          onChange={(e) => setAuthor(e.target.value)}
+        />
         <textarea
           style={{ border: error ? "1px solid red" : "1px solid #61dafb" }}
           placeholder="Message"
